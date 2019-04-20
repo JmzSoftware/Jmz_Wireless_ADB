@@ -33,7 +33,6 @@ import eu.chainfire.libsuperuser.Shell;
 
 public class MainActivity extends AppCompatActivity {
 
-    Context context;
     TextView textView;
     Button adb;
 
@@ -42,25 +41,23 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        context = this;
-
-        adb = (Button) findViewById(R.id.button);
+        adb = findViewById(R.id.button);
         adb.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (adb.getText() == "Disable ADB") {
+                if (adb.getText().equals(getResources().getString(R.string.disable))) {
                     disableAdb();
                     textView.setText("");
-                    adb.setText("Enable ADB");
+                    adb.setText(getResources().getString(R.string.enable));
                 } else {
                     enableAdb();
-                    textView.setText(String.format("Run 'adb connect %s:5555' in terminal", getIP()));
-                    adb.setText("Disable ADB");
+                    textView.setText(getResources().getString(R.string.noti, getIP()));
+                    adb.setText(getResources().getString(R.string.disable));
                 }
             }
         });
 
-        textView = (TextView) findViewById(R.id.textView);
+        textView = findViewById(R.id.textView);
     }
 
     public void enableAdb () {
@@ -74,7 +71,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     public String getIP () {
-        WifiManager mWifiManager = (WifiManager) context.getSystemService(Context.WIFI_SERVICE);
+        WifiManager mWifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
         int ip = mWifiManager.getConnectionInfo().getIpAddress();
         return (ip & 0xFF) + "." + ((ip >> 8) & 0xFF) + "." + ((ip >> 16) & 0xFF) + "."
                 + ((ip >> 24) & 0xFF);
